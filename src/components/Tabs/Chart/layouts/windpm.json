@@ -1,0 +1,30 @@
+{
+    "showlegend": true,
+    "xaxis": {
+        "autorange": true
+    },
+    "yaxis": {
+        "side": "left",
+        "title": {
+            "text": "PM2.5(мкг/м3)",
+            "font": {
+                "size": 12,
+                "color": "#7f7f7f"
+            }
+        },
+        "fixedrange": true,
+        "zeroline": false
+    },
+    "yaxis2": {
+        "overlaying": "y",
+        "fixedrange": true,
+        "side": "right",
+        "zeroline": false
+    },
+    "margin": {
+        "l": 55,
+        "r": 20,
+        "b": 40,
+        "t": 30
+    }
+}
