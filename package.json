@@ -15,9 +15,11 @@
     "plotly.js-dist-min": "^2.12.1",
     "plotly.js-locales": "^2.16.1",
     "proj4": "^2.8.0",
+    "react-scripts": "^5.0.1",
     "vue": "^3.0.0",
     "vue3-openlayers": "^0.1.70",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "webpack": "^4.39.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.13",

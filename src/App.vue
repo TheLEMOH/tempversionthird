@@ -1,10 +1,6 @@
 <template >
-  <div
-    v-loading="loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
-    element-loading-text="Загрузка и обработка данных"
-    style="height:100vh"
-  >
+  <div v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+    element-loading-text="Загрузка и обработка данных" style="height:100vh">
     <ControlsVue></ControlsVue>
     <RawData v-if="activeTab == 'rawData'"></RawData>
     <Comparison v-if="activeTab == 'comparison'"></Comparison>
@@ -42,7 +38,7 @@ export default {
     this.UpdateSite(params.site);
     this.UpdateWindows(window);
     this.UpdateRelaout(params.relayout);
-    this.GetSets([params.start, params.end]);
+    this.GetSets({ date: [params.start, params.end] });
   },
   methods: {
     ...mapActions([

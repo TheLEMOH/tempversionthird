@@ -30,7 +30,7 @@ const CreateAnnotationDate = (x) => {
         arrowhead: 1,
         ax: 0,
         ay: -7,
-    }, ];
+    },];
 }
 
 const CreateAnnotationPoint = (x, text) => {
@@ -88,14 +88,13 @@ const Annotation = (x, y, text, settings) => {
     return { x, y, text, ...settings }
 }
 
-const Side = (profiles) => {
-    const LENGTH = 23
+const Side = (profiles, length) => {
     const x1 = profiles[0].x
     const x2 = profiles[1] ? profiles[1].x : profiles[0].x
     const side1 = []
     const side2 = []
 
-    for (let i = 0; i < LENGTH; i++)
+    for (let i = 0; i < length; i++)
         if (x1[i] - x2[i] > 0) {
             side1.push(10)
             side2.push(-10)

@@ -20,7 +20,7 @@ export default {
 
 <style>
 .map-sites-list {
-  width: 180px;
+  width: 190px;
   flex-shrink: 0;
   position: absolute;
   right: 0;

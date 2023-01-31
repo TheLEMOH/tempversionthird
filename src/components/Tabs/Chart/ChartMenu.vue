@@ -7,12 +7,8 @@
     </el-button>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item
-          :class="[selectedChart == chart.id ? 'selected-chart' : null]"
-          v-for="chart in menu"
-          :key="chart.id"
-          @click="this.$emit('change-chart', chart.id)"
-        >{{ chart.name }}</el-dropdown-item>
+        <el-dropdown-item :class="[selectedChart == chart.id ? 'selected-chart' : null]" v-for="chart in menu"
+          :key="chart.id" @click="this.$emit('change-chart', chart.id)">{{ chart.name }}</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

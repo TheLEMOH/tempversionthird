@@ -1,6 +1,6 @@
-const CreateLineChart = async(data, heights) => {
+const CreateLineChart = async (data, heights) => {
     const lines = heights.map(height => {
-        const array = data.filter(d => d.indicator == height.code)
+        const array = data.filter(d => d.tag == height.tag)
         return CreateLine(array, height)
     })
     return lines;
@@ -9,7 +9,7 @@ const CreateLineChart = async(data, heights) => {
 const CreateLine = (data, height) => {
     const x = []
     const y = []
-    const line = height.code == 'm-t' ? { width: 5, color: '#000000', dash: 'dashdot', shape: 'spline' } : { shape: 'spline' }
+    const line = !height.tag && height.tag != 0 ? { width: 5, color: '#000000', dash: 'dashdot', shape: 'spline' } : { shape: 'spline' }
 
     data.forEach(element => {
         x.push(`${element.time}`)

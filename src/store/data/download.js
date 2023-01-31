@@ -29,7 +29,7 @@ const FormatDateWithHour = (d) => {
     return yy + "-" + mm + "-" + dd + ' ' + hh + ':' + min + ':00';
 }
 
-const DownloadDataNewApi = async(options) => {
+const DownloadDataNewApi = async (options) => {
     const { date, site, indicators, interval, dataType } = options
     const dateBegin = FormatDate(date[0])
     const dateEnd = FormatDate(date[1])
@@ -40,7 +40,7 @@ const DownloadDataNewApi = async(options) => {
     return { data, site: site.id }
 }
 
-const DownloadSets = async(project) => {
+const DownloadSets = async (project) => {
     const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/${project}?uid=85hpwm81fqhnqk8n`
     const fetchData = await fetch(URL)
     const json = await fetchData.json()
@@ -50,7 +50,7 @@ const DownloadSets = async(project) => {
 
 }
 
-const DownloadDataWindPm = async(options) => {
+const DownloadDataWindPm = async (options) => {
     const { date, site, indicators, interval } = options
     const dateBegin = FormatDate(date[0])
     const dateEnd = FormatDate(date[1])
@@ -61,7 +61,7 @@ const DownloadDataWindPm = async(options) => {
     return { data, site: site.id }
 }
 
-const DownloadDataNewApiStatistic = async(options) => {
+const DownloadDataNewApiStatistic = async (options) => {
     const { date } = options
     const dateBegin = FormatDate(date[0])
     const dateEnd = FormatDate(date[1])
@@ -99,13 +99,15 @@ const JSONAPI = (json, indicators) => {
                 row.push({
                     indicator: h.code,
                     time: j.time,
-                    value: j[h.code]
+                    value: j[h.code],
+                    tag: h.tag
                 })
             } else {
                 row.push({
                     indicator: h.code,
                     time: j.time,
-                    value: null
+                    value: null,
+                    tag: h.tag
                 })
             }
         })
@@ -133,14 +135,14 @@ const JSONAPI = (json, indicators) => {
 
 
 const CreateTimeGrid = (dates, heights) => {
-    const start = typeof dates[0] == 'string' ? new Date(`${dates[0]} 00:00:00`) : new Date(`${dates[0].getFullYear()}-${dates[0].getMonth()+1}-${dates[0].getDate()} 00:00:00`)
-    const end = typeof dates[1] == 'string' ? new Date(`${dates[1]} 23:55:00`) : new Date(`${dates[1].getFullYear()}-${dates[1].getMonth()+1}-${dates[1].getDate()} 23:55:00`)
+    const start = typeof dates[0] == 'string' ? new Date(`${dates[0]} 00:00:00`) : new Date(`${dates[0].getFullYear()}-${dates[0].getMonth() + 1}-${dates[0].getDate()} 00:00:00`)
+    const end = typeof dates[1] == 'string' ? new Date(`${dates[1]} 23:55:00`) : new Date(`${dates[1].getFullYear()}-${dates[1].getMonth() + 1}-${dates[1].getDate()} 23:55:00`)
     const interval = Intervals([start, end])
     const grid = []
     while (start.getTime() <= end.getTime()) {
         for (let i = 0, length = heights.length; i < length; i++) {
             grid.push({
-                indicator: heights[i].code,
+                tag: heights[i].tag,
                 time: FormatDateWithHour(start),
                 value: null
             })
@@ -159,12 +161,40 @@ const CreateTimeGrid = (dates, heights) => {
     return grid
 }
 
+
+const CreateTimeLine = (dates) => {
+    const start = typeof dates[0] == 'string' ? new Date(`${dates[0]} 00:00:00`) : new Date(`${dates[0].getFullYear()}-${dates[0].getMonth() + 1}-${dates[0].getDate()} 00:00:00`)
+    const end = typeof dates[1] == 'string' ? new Date(`${dates[1]} 23:55:00`) : new Date(`${dates[1].getFullYear()}-${dates[1].getMonth() + 1}-${dates[1].getDate()} 23:55:00`)
+    const interval = Intervals([start, end])
+    const line = []
+    while (start.getTime() <= end.getTime()) {
+
+        line.push(FormatDateWithHour(start))
+
+        if (interval == 'minute')
+            start.setMinutes(start.getMinutes() + 5)
+
+        if (interval == 'hour')
+            start.setHours(start.getHours() + 1)
+
+        if (interval == 'day')
+            start.setDate(start.getDate() + 1)
+    }
+
+    return line
+}
+
+
 const Cut = (values, grid) => {
     for (let i = 0, il = values.length; i < il; i++) {
         for (let j = 0, jl = values[i].data.length; j < jl; j++) {
             if (values[i].data[j].value != null) {
-                const gridIndex = grid.findIndex(p => p.indicator == values[i].data[j].indicator && p.time == values[i].data[j].time)
-                grid[gridIndex].value = values[i].data[j].value
+                const gridIndex = grid.findIndex(p => p.tag == values[i].data[j].tag && p.time == values[i].data[j].time)
+                if (gridIndex != -1) {
+                    grid[gridIndex].value = values[i].data[j].value
+                }
+
+
             }
 
         }
@@ -181,8 +211,8 @@ const Cut = (values, grid) => {
 }
 
 const Intervals = (dates) => {
-    const start = typeof dates[0] == 'string' ? new Date(`${dates[0]} 00:00:00`) : new Date(`${dates[0].getFullYear()}-${dates[0].getMonth()+1}-${dates[0].getDate()} 00:00:00`)
-    const end = typeof dates[1] == 'string' ? new Date(`${dates[1]} 23:00:00`) : new Date(`${dates[1].getFullYear()}-${dates[1].getMonth()+1}-${dates[1].getDate()} 23:00:00`)
+    const start = typeof dates[0] == 'string' ? new Date(`${dates[0]} 00:00:00`) : new Date(`${dates[0].getFullYear()}-${dates[0].getMonth() + 1}-${dates[0].getDate()} 00:00:00`)
+    const end = typeof dates[1] == 'string' ? new Date(`${dates[1]} 23:00:00`) : new Date(`${dates[1].getFullYear()}-${dates[1].getMonth() + 1}-${dates[1].getDate()} 23:00:00`)
     const TotalDays = (end - start) / 1000 / 60 / 60 / 24
 
     if (TotalDays >= 0 && TotalDays <= 1) {
@@ -199,4 +229,4 @@ const Intervals = (dates) => {
 }
 
 
-export { FormatDateWithHour, FormatDate, DownloadDataNewApi, DownloadDataNewApiStatistic, DownloadSets, Cut, DownloadDataWindPm, CreateTimeGrid }
+export { FormatDateWithHour, FormatDate, DownloadDataNewApi, DownloadDataNewApiStatistic, DownloadSets, Cut, DownloadDataWindPm, CreateTimeGrid, CreateTimeLine }

@@ -2,7 +2,7 @@
   <el-card class="box-card" shadow="never">
     <template #header>
       <div class="card-header">
-        <span class="name-chart">{{code}} :: {{ nameChart }}</span>
+        <span class="name-chart">{{ code }} :: {{ nameChart }}</span>
         <Menu :menu="menu" :selectedChart="chart" @change-chart="ChangeChart"></Menu>
       </div>
     </template>
@@ -51,6 +51,8 @@ export default {
       "relayout",
       "detailsTermogramm",
       "windows",
+      "windDirection",
+      "onDirection"
     ]),
     code() {
       const activeSite = this.site || this.activeSite;
@@ -102,9 +104,12 @@ export default {
       const timestamp = this.timestamp;
       const borders = this.onBorders && site != 4310 ? this.borders : [];
       const points = this.onBorders && site != 4310 ? this.startPoints : [];
+      const directions = this.windDirection[site] && this.chart == 'windpm' && this.onDirection ? this.windDirection[site] : []
       const shapes = [...borders, ...timestamp.shapes];
-      const annotations = [...timestamp.annotations, ...points];
+      const annotations = [...timestamp.annotations, ...points, ...directions];
       const template = { ...layout, shapes, annotations };
+
+
       return template;
     },
 
@@ -201,6 +206,9 @@ export default {
     async onBorders() {
       this.Relayout();
     },
+    async onDirection() {
+      this.Relayout();
+    },
     async detailsTermogramm(newVal) {
       if (this.chart == "termogramma") this.ToggleVisible(newVal);
     },
@@ -219,4 +227,5 @@ export default {
 </script>
 
 <style>
+
 </style>

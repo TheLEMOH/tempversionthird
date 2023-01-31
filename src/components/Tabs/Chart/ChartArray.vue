@@ -2,7 +2,7 @@
   <el-card class="box-card" shadow="never">
     <template #header>
       <div class="card-header">
-        <span class="name-chart">{{codes}} :: {{ nameChart }}</span>
+        <span class="name-chart">{{ codes }} :: {{ nameChart }}</span>
         <Menu :menu="menu" :selectedChart="chart" @change-chart="ChangeChart"></Menu>
       </div>
     </template>
@@ -48,6 +48,8 @@ export default {
       "relayout",
       "windows",
       "chartMenuMain",
+      "onDirection",
+      "windDirection"
     ]),
     codes() {
       const sites = this.sites.filter((s) => s.id != 4310);
@@ -95,12 +97,14 @@ export default {
     },
 
     GetTemplate(chart = this.chart) {
+      const site = 1
       const layout = layouts[chart];
       const timestamp = this.timestamp;
       const points = this.onBorders ? this.startPoints : [];
       const borders = this.onBorders ? this.borders : [];
       const shapes = [...borders, ...timestamp.shapes];
-      const annotations = [...points, ...timestamp.annotations];
+      const directions = this.windDirection[site] && this.chart == 'windpm' && this.onDirection ? this.windDirection[site] : []
+      const annotations = [...points, ...timestamp.annotations, ...directions];
       const template = { ...layout, shapes, annotations };
       return template;
     },
@@ -181,7 +185,9 @@ export default {
     async onBorders() {
       this.Relayout();
     },
-
+    async onDirection() {
+      this.Relayout();
+    },
     relayout: {
       handler(val, old) {
         const snew = JSON.stringify(val.event);
@@ -196,4 +202,5 @@ export default {
 </script>
 
 <style>
+
 </style>

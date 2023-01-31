@@ -5,7 +5,7 @@
     </el-icon>
   </el-button>
 </template>
-    <script>
+<script>
 import { QuestionFilled } from "@element-plus/icons-vue";
 import { mapActions } from "vuex";
 export default {
@@ -20,4 +20,5 @@ export default {
 
 
 <style>
+
 </style>

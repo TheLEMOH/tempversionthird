@@ -24,7 +24,7 @@ const TemperatureDifference = (profiles) => {
     }]
 }
 
-const CreateGridDifference = async(data, heights) => {
+const CreateGridDifference = async (data, heights) => {
     if (data.length == 0)
         return []
 
@@ -32,7 +32,7 @@ const CreateGridDifference = async(data, heights) => {
     for (let i = 0, il = heights.length; i < il; i++) {
         const lines = []
         for (let j = 0, jl = data.length; j < jl; j++) {
-            const line = data[j].filter(d => d.indicator == heights[i].code)
+            const line = data[j].filter(d => d.tag == heights[i].tag)
             lines.push(line)
         }
         const basicLine = lines[0]
@@ -44,9 +44,9 @@ const CreateGridDifference = async(data, heights) => {
             }
             if (values.length > 1) {
                 const difference = Difference(values)
-                result.push({ indicator: basicLine[j].indicator, time: basicLine[j].time, value: difference })
+                result.push({ tag: basicLine[j].tag, time: basicLine[j].time, value: difference })
             } else {
-                result.push({ indicator: basicLine[j].indicator, time: basicLine[j].time, value: null })
+                result.push({ tag: basicLine[j].tag, time: basicLine[j].time, value: null })
             }
 
         }

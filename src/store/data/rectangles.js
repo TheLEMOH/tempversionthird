@@ -11,15 +11,19 @@ const CreateRectangles = (data, gradient) => {
     const id = data.id
     const length = data.x.length
     const rects = []
+
     for (let i = 1; i < length; i++) {
-        if (Number(gradient[i]) > 0) {
-            const x0 = x[i - 1]
-            const x1 = x[i]
-            const y0 = y[i - 1]
-            const y1 = y[i]
+        if (+gradient[i] > 0) {
+
+            const x0 = x[i]
+            const x1 = x[i - 1]
+            const y0 = y[i]
+            const y1 = y[i - 1]
+
             rects.push(Rectangle(x0, x1, y0, y1, id))
         }
     }
+
     return rects
 }
 

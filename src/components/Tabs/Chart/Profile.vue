@@ -2,9 +2,12 @@
   <el-card class="comparison-box-card" shadow="never">
     <template #header>
       <div class="card-header">
-        <span class="name-chart">Профиль</span>
-        <span class="timestamp">{{time}}</span>
-        <Menu :menu="menu" :selected-chart="chart" @change-chart="ChangeChart"></Menu>
+        <div>
+          <span class="name-chart">Профиль</span>
+          <span class="timestamp">{{ time }}</span>
+        </div>
+        <Menu :menu="menu" :selected-chart="chart" @change-chart="ChangeChart" v-show="activeTab == 'comparison'">
+        </Menu>
       </div>
     </template>
     <div ref="chart" class="chart" :style="{ height: height }"></div>
@@ -47,6 +50,8 @@ export default {
       "disabledProfile",
       "windows",
       "x",
+      "onManually",
+      "manuallyMinMax"
     ]),
     time() {
       if (this.x) {
@@ -119,7 +124,16 @@ export default {
 
       const layout = layouts[chart];
 
+      if (this.onManually && typeof +this.manuallyMinMax == 'number' && +this.manuallyMinMax && chart != 'profile') {
+        layout.xaxis.range = [-this.manuallyMinMax, +this.manuallyMinMax]
+        layout.xaxis.autorange = false
+      }
+      else {
+        layout.xaxis.autorange = true
+      }
+
       const template = { ...layout, shapes, annotations };
+
       return template;
     },
 
@@ -167,6 +181,12 @@ export default {
     async disabledProfile() {
       this.Update();
     },
+    async onManually() {
+      this.Update()
+    },
+    async manuallyMinMax() {
+      this.Update()
+    }
   },
 };
 </script>

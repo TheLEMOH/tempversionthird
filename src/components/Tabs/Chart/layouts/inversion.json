@@ -12,11 +12,13 @@
                 "color": "#7f7f7f"
             }
         },
+        "dtick": 50,
         "fixedrange": true,
         "zeroline": false
     },
     "yaxis2": {
         "overlaying": "y",
+        "showgrid": false,
         "fixedrange": true,
         "side": "right",
         "zeroline": false

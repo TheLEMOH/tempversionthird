@@ -72,7 +72,6 @@ const CreateLinePm = (wv, settings) => {
 
 
 const InitWindPm = (data) => {
-
     const wv = data.filter(d => d.indicator == 'm-wv')
     const pm = data.filter(d => d.indicator == 'p-pm2')
 

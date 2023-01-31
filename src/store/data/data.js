@@ -1,9 +1,9 @@
-import { DownloadDataNewApi, DownloadDataNewApiStatistic, DownloadDataWindPm, Cut, CreateTimeGrid } from "./download"
+import { DownloadDataNewApi, DownloadDataNewApiStatistic, DownloadDataWindPm, Cut, CreateTimeGrid, CreateTimeLine } from "./download"
 import { CreateShapes, CreateBorders } from "./shapes"
-import { TemperatureDifference, CreateGridDifference } from "./difference"
+import { TemperatureDifference, } from "./difference"
 import { CreateAnnotationsInverson, CreateAnnotationDate, Side, CreateAnnotationPoint /* CreateAnnotationsDifference */ } from "./annotation"
 import CalculateIntervals from "./intervals"
-import CreateAtmosphere from "./atmosphere"
+
 import CreateProfile from "./profile"
 import CreateRectangles from "./rectangles"
 import Gradiend from "./gradient"
@@ -11,6 +11,9 @@ import CreateAdiabat from "./adiabat"
 import InitGrap from "./initCharts"
 import CreateTotalLines from "./linesTotal"
 import DataTypes from "./dataTypes"
+import CreateAnnotationWind from "./windAnnotations"
+
+import Interpolate from "./interpolate"
 
 const state = {
     data: {},
@@ -19,6 +22,7 @@ const state = {
     adiabats: [],
     timestamp: { shapes: [], annotations: [] },
     borders: [],
+    windDirection: [],
     startPoints: [],
     profileInversion: { shapes: [], annotations: [] },
     disabledProfile: null
@@ -44,10 +48,18 @@ const actions = {
         const hpp = o.sites ? o.sites : ctx.getters.sites
         const meteo = o.meteo ? o.meteo : ctx.getters.meteo
         const meteoIndicators = o.meteoIndicators ? o.meteoIndicators : ctx.getters.meteoIndicators
+        const onInterpolate = o.onInterpolate ? o.onInterpolate : ctx.getters.onInterpolate
+
         const heights = o.heights ? o.heights : ctx.getters.heights
+        const heightsInterpolate = ctx.getters.heightsInterpolate
 
         const interval = CalculateIntervals(o.date)
         const dataType = DataTypes(o.date)
+
+        const timeGrid = CreateTimeGrid(date, heightsInterpolate)
+        const timeLine = CreateTimeLine(date)
+
+        const INTERPOLATESTEP = ctx.getters.INTERPOLATESTEP
 
         DownloadDataNewApiStatistic({ date }).then((contour) => {
             const promises = []
@@ -57,9 +69,14 @@ const actions = {
                     const d = DownloadDataNewApi(options).then(async res => {
                         const data = res.data
                         const exist = data.length > 0
-                        ctx.commit('UpdateData', { data: data.filter(d => d.value != null), site: site.id })
+                        let interpolate = []
+                        if (onInterpolate)
+                            interpolate = await Interpolate(data, timeLine, INTERPOLATESTEP)
+                        else
+                            interpolate = data
+                        ctx.commit('UpdateData', { data: interpolate, site: site.id })
                         this.dispatch("UpdateDataExist", { data: exist, id: site.id })
-                        return { data, site: site.id, exist, children: site.children, profiler: site.profiler }
+                        return { data: interpolate, site: site.id, exist, children: site.children, profiler: site.profiler }
                     })
                     promises.push(d)
                 }
@@ -71,9 +88,8 @@ const actions = {
                 promises.push(d)
             })
 
-            Promise.all(promises).then(async(res) => {
+            Promise.all(promises).then(async (res) => {
                 const resTest = []
-                const timeGrid = CreateTimeGrid(date, heights)
 
                 const profilers = res.filter(v => v.profiler)
                 const post = res.filter(v => !v.profiler)
@@ -96,18 +112,13 @@ const actions = {
                     dataTest[r.site] = r.data
                 })
 
-                const graphics = await InitGrap(sites, dataTest, heights, contour)
+                const graphics = await InitGrap(sites, dataTest, heightsInterpolate, contour)
+
+
 
                 const x = graphics['4310'].termogramma[0].x
                 const timestampPosition = Math.round(x.length / 2)
                 const time = ctx.getters.x || x[timestampPosition]
-
-                const dataForDifferenceAtmosphere = [dataTest[4310], dataTest[1]]
-
-                const grid = await CreateGridDifference(dataForDifferenceAtmosphere, heights)
-                const atmosphereDifference = await CreateAtmosphere(grid, heights)
-
-                graphics['4310'].atmosphereDifference = atmosphereDifference
 
                 ctx.commit('UpdateGraphics', graphics)
 
@@ -115,6 +126,7 @@ const actions = {
                 this.dispatch('UpdateProfile', { date: time, site: 4310 })
                 this.dispatch('UpdateLoading', false)
                 this.dispatch('UpdateStartPoints')
+                this.dispatch('UpdateWindDirection', post)
                 this.dispatch('UpdateDrawer', false)
 
             })
@@ -123,12 +135,13 @@ const actions = {
 
     async UpdateProfile(ctx, options) {
         const sites = ctx.getters.sites.filter(s => s.data && s.id != 1)
+        const heights = ctx.getters.heightsInterpolate
         const disabledProfile = ctx.getters.disabledProfile
         const { date } = options
         const charts = []
-        sites.forEach(async(site, index) => {
+        sites.forEach(async (site, index) => {
             const data = ctx.state.data[site.id]
-            const settings = { date, data, site, disabledProfile, index }
+            const settings = { date, data, site, disabledProfile, index, heights }
             const profile = CreateProfile(settings)
             charts.push(profile)
         })
@@ -162,6 +175,12 @@ const actions = {
         ctx.commit('UpdateBorders', borders)
     },
 
+    async UpdateWindDirection(ctx, data) {
+        const sites = ctx.getters.sites
+        const annotations = CreateAnnotationWind(data, sites)
+        ctx.commit('UpdateWindDirection', annotations)
+    },
+
     async UpdateStartPoints(ctx) {
         const sites = ctx.getters.sites.filter(s => s.id != 4310 && s.id != 1)
         const data = ctx.getters.data
@@ -178,7 +197,8 @@ const actions = {
 
     async UpdateProfileLayout(ctx, profiles) {
         const profilesExist = profiles.filter(p => p.x.length != 0)
-        const side = Side(profilesExist)
+        const heightLength = ctx.getters.heightsInterpolate.length
+        const side = Side(profilesExist, heightLength)
         const shapes = []
         const annotations = []
         profilesExist.forEach((profile, index) => {
@@ -257,6 +277,9 @@ const mutations = {
     },
     UpdateDisabledProfile(state, value) {
         state.disabledProfile = value
+    },
+    UpdateWindDirection(state, value) {
+        state.windDirection = value
     }
 
 }
@@ -303,6 +326,9 @@ const getters = {
     },
     disabledProfile(state) {
         return state.disabledProfile
+    },
+    windDirection(state) {
+        return state.windDirection
     }
 }
 

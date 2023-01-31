@@ -11,16 +11,14 @@ const colorscale = [
     ['1.0', 'rgb(165,0,38)']
 ]
 
-
-
-const CreateAtmosphere = async(data, heights, contour = { avgMin: 0, avgMax: 0 }, autocontour = true) => {
+const CreateAtmosphere = async (data, heights, contour = { avgMin: 0, avgMax: 0 }, autocontour = true) => {
     if (data.length == 0)
         return []
 
-    const x = data.filter(d => d.indicator == 't_h0000' && d.indicator != 'm-t').map(d => d.time)
-    const y = heights.filter(h => h.code != 'm-t').map(h => h.tag)
-    const z = heights.filter(h => h.code != 'm-t').map((height) => {
-        const layer = data.filter(d => d.indicator == height.code)
+    const x = data.filter(d => d.tag == 0).map(d => d.time)
+    const y = heights.filter(h => h.tag).map(h => h.tag)
+    const z = heights.filter(h => h.tag).map((height) => {
+        const layer = data.filter(d => d.tag == height.tag)
         return CreateZ(layer)
     })
 
@@ -45,6 +43,7 @@ const CreateAtmosphere = async(data, heights, contour = { avgMin: 0, avgMax: 0 }
         },
 
     }]
+
     return heatmap
 }
 

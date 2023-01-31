@@ -3,27 +3,72 @@ import CreateAtmosphere from "./atmosphere"
 import CreateInversion from "./inversion"
 import InitWindPm from "./wind"
 
-const CreateGraphics = async(prof, sensor, heights, contour, s) => {
-    const termogramma = CreateLineChart(prof, heights)
-    const atmosphere = CreateAtmosphere(prof, heights, contour, false, s)
-    const inversion = CreateInversion(prof, heights)
-    const windpm = InitWindPm(sensor)
-    return Promise.all([termogramma, atmosphere, inversion, windpm]).then((res) => {
-        return {
-            termogramma: res[0],
-            atmosphere: res[1],
-            inversion: res[2],
-            windpm: res[3]
+import { CreateGridDifference } from "./difference"
+
+
+const InitGrap = async (sites, data, heights, contour) => {
+    const CreateGraphics = async (prof, sensor, heights, contour, site) => {
+        let termogramma = []
+        let atmosphere = []
+        let inversion = []
+        let windpm = []
+        let atmosphereDifference = []
+
+        if (site.graphics.termogramma) {
+            termogramma = CreateLineChart(prof, heights)
         }
-    })
-}
+
+        if (site.graphics.atmosphere) {
+            atmosphere = CreateAtmosphere(prof, heights, contour, false, site)
+        }
+
+        if (site.graphics.inversion) {
+            inversion = CreateInversion(prof, heights)
+        }
+
+        if (site.graphics.windpm) {
+            windpm = InitWindPm(sensor)
+        }
+
+        if (site.graphics.atmosphereDifference) {
+            const dataForDifferenceAtmosphere = [data[4310], data[1]]
 
 
-const InitGrap = async(sites, data, heights, contour) => {
+
+            const grid = await CreateGridDifference(dataForDifferenceAtmosphere, heights)
+
+            console.log(grid)
+
+            atmosphereDifference = CreateAtmosphere(grid, heights)
+        }
+
+        return Promise.all([termogramma, atmosphere, inversion, windpm, atmosphereDifference]).then((res) => {
+
+            console.log(res[4])
+
+            return {
+                termogramma: res[0],
+                atmosphere: res[1],
+                inversion: res[2],
+                windpm: res[3],
+                atmosphereDifference: res[4]
+            }
+        })
+    }
+
+
     const graphics = []
-    sites.forEach(s => {
-        const g = CreateGraphics(data[s.id], data[s.sensor], heights, contour, s)
-        graphics.push({ data: g, site: s.id })
+    sites.forEach(site => {
+        const postData = []
+        site.sensor.forEach(sensor => {
+            sensor.indicators.forEach(indicator => {
+                postData.push(...data[sensor.id].filter(d => d.indicator == indicator))
+            })
+        })
+
+
+        const g = CreateGraphics(data[site.id], postData, heights, contour, site)
+        graphics.push({ data: g, site: site.id })
     })
 
 

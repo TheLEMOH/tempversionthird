@@ -11,7 +11,7 @@ const colorscale = [
     ['1.0', 'rgb(165,0,38)']
 ]
 
-let settingsFinal = {
+let settingsScatterTotal = {
     type: "scatter",
     visible: true,
     name: 'Суммарная (°C)',
@@ -19,8 +19,8 @@ let settingsFinal = {
     line: { width: 2, color: '#ff0000', }
 }
 
-const CreateInversion = async(data, heights) => {
-    const h = heights.filter(h => h.code != 'm-t')
+const CreateInversion = async (data, heights) => {
+    const h = heights.filter(h => h.tag || h.tag == 0)
     const x = CreateX(data)
     const y = CreateY(h)
     const z = CreateZ(data, h)
@@ -48,28 +48,30 @@ const CreateInversion = async(data, heights) => {
     });
 }
 
-const CreateY = async(heights) => {
+const CreateY = async (heights) => {
     const y = heights.map(h => h.tag)
     return y
 }
 
-const CreateX = async(data) => {
-    const x = data.filter(d => d.indicator == 't_h0000').map(d => d.time)
+const CreateX = async (data) => {
+    const x = data.filter(d => d.tag == 0).map(d => d.time)
     return x
 }
 
-const CreateZ = async(data, heights) => {
+const CreateZ = async (data, heights) => {
+
     const layers = heights.map(height => {
-        const array = data.filter(d => d.indicator == height.code)
+        const array = data.filter(d => d.tag == height.tag)
         return array
     })
+
 
     const z = CalculateInversion(layers)
 
     return z
 }
 
-const CalculateInversion = async(layers) => {
+const CalculateInversion = async (layers) => {
     const layersLength = layers.length
     const array = []
     for (let i = 1; i < layersLength; i++) {
@@ -93,6 +95,7 @@ const CalculateScatterTotal = (x, z) => {
     const hl = z[0].length
     const zl = z.length
     const y = []
+
     for (let j = 0; j < hl; j++) {
         let sum = 0
         for (let i = 0; i < zl; i++) {
@@ -104,7 +107,7 @@ const CalculateScatterTotal = (x, z) => {
     return {
         y,
         x,
-        ...settingsFinal
+        ...settingsScatterTotal
     }
 }
 
