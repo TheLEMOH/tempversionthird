@@ -1,4 +1,4 @@
-const CreateHeights = (begin, end, step, ) => {
+const CreateHeights = (begin, end, step) => {
     const res = []
     for (let i = begin; i <= end; i += step) {
         let code = ''
@@ -27,4 +27,15 @@ const sitesIndicators = [{
     name: "Pm2.5",
 }]
 
-export { heights, sitesIndicators }
+
+const HeightDifference = (sites) => {
+    const result = {}
+
+    sites.forEach(site => {
+        result[site.id] = 146 - +site.geom_alt 
+    });
+
+    return result
+}
+
+export { heights, sitesIndicators, HeightDifference }

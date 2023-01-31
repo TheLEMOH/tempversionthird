@@ -3,6 +3,7 @@ const CreateLineChart = async (data, heights) => {
         const array = data.filter(d => d.tag == height.tag)
         return CreateLine(array, height)
     })
+
     return lines;
 }
 

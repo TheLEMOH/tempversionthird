@@ -148,7 +148,6 @@ export default {
       const chart = this.$refs.chart;
       const data = this.GetData();
       const template = this.GetTemplate();
-
       Plotly.react(chart, data, template, this.config);
     },
 

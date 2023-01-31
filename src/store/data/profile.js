@@ -1,17 +1,19 @@
 const CreateProfile = async (options) => {
-    const { data, date, site, disabledProfile, heights } = options
+    const { data, date, site, disabledProfile } = options
     const layer = data.filter(r => r.tag || r.tag == 0).filter(d => d.time == date)
-    const line = CreateLine(layer, site, heights, disabledProfile)
+    const line = CreateLine(layer, site, disabledProfile)
+
     return line
 }
 
-const CreateLine = (layer, site, heights, disabled) => {
-    
+const CreateLine = (layer, site, disabled) => {
+
     const x = layer.map(element => {
         return element.value
     });
 
-    const y = heights.filter(h => h.tag || h.tag == 0).map(h => h.tag)
+    const y = layer.map(l => l.tag)
+
 
     const visible = site.id == disabled ? 'legendonly' : true
 

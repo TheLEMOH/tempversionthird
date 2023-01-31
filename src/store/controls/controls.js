@@ -26,8 +26,8 @@ const state = {
     relayout: {},
     x: null,
     mapModal: false,
-    onInterpolate: false,
-    INTERPOLATESTEP: 25,
+    onInterpolate: true,
+    INTERPOLATESTEP: 50,
     windows: { profile: null, rawData1: null, rawData2: null, comparison1: null, comparison2: null },
 
 }

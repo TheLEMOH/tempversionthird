@@ -30,13 +30,13 @@ const FormatDateWithHour = (d) => {
 }
 
 const DownloadDataNewApi = async (options) => {
-    const { date, site, indicators, interval, dataType } = options
+    const { date, site, indicators, interval, dataType, heightDifference } = options
     const dateBegin = FormatDate(date[0])
     const dateEnd = FormatDate(date[1])
     const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/hpp-mtp5/data/${dataType}?uid=85hpwm81fqhnqk8n&sites=${site.id}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=${interval}`
     const fetchData = await fetch(URL)
     const json = await fetchData.json()
-    const data = JSONAPI(json, indicators)
+    const data = JSONAPI(json, indicators, site, heightDifference)
     return { data, site: site.id }
 }
 
@@ -57,7 +57,7 @@ const DownloadDataWindPm = async (options) => {
     const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/hpp-meteo/data/archive?uid=85hpwm81fqhnqk8n&sites=${site.id}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=${interval}`
     const fetchData = await fetch(URL)
     const json = await fetchData.json()
-    const data = JSONAPI(json, indicators)
+    const data = JSONAPIWIND(json, indicators)
     return { data, site: site.id }
 }
 
@@ -89,7 +89,52 @@ const Average = (json) => {
 }
 
 
-const JSONAPI = (json, indicators) => {
+const JSONAPI = (json, indicators, site, heightDifference) => {
+    const row = []
+    let flag = false
+    json.data.forEach(j => {
+        indicators.forEach(h => {
+            const tag = h.tag || h.tag == 0 ? +h.tag - heightDifference[site.id] : null
+            if (typeof j[h.code] == 'number') {
+                flag = true
+                row.push({
+                    time: j.time,
+                    value: j[h.code],
+                    tag: tag,
+                    code: h.code
+                })
+            } else {
+                row.push({
+                    time: j.time,
+                    value: null,
+                    tag: tag,
+                    code: h.code
+                })
+            }
+        })
+    })
+
+    for (let i = 0, il = row.length; i < il; i++) {
+        if (row[i].value != null) {
+            row.splice(0, i - 1)
+            break;
+        }
+    }
+
+    for (let i = row.length - 1, il = row.length; i > 0; i--) {
+        if (row[i].value != null) {
+            row.splice(i + 1, il)
+            break
+        }
+    }
+
+    if (flag)
+        return row
+    else
+        return []
+}
+
+const JSONAPIWIND = (json, indicators) => {
     const row = []
     let flag = false
     json.data.forEach(j => {
@@ -97,14 +142,12 @@ const JSONAPI = (json, indicators) => {
             if (typeof j[h.code] == 'number') {
                 flag = true
                 row.push({
-                    indicator: h.code,
                     time: j.time,
                     value: j[h.code],
                     tag: h.tag
                 })
             } else {
                 row.push({
-                    indicator: h.code,
                     time: j.time,
                     value: null,
                     tag: h.tag

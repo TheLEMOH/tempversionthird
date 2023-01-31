@@ -156,12 +156,14 @@ export default {
       const chart = this.$refs.chart;
       const data = this.GetData(c);
       const template = this.GetTemplate(c);
+
       Plotly.react(chart, data, template);
     },
 
     async Relayout() {
       const chart = this.$refs.chart;
       const template = this.GetTemplate();
+
       Plotly.relayout(chart, template);
     },
 

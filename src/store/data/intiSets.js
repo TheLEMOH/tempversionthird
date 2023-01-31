@@ -19,9 +19,9 @@ const add = {
     name: "#2 - Мобильный",
     code: 'p2',
     data: true,
+    geom_alt: 135,
     query: false
 }
-
 
 const initSets = (sites) => {
     sites.splice(1, 0, add)

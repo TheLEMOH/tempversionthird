@@ -3,7 +3,7 @@ import { CreateShapes, CreateBorders } from "./shapes"
 import { TemperatureDifference, } from "./difference"
 import { CreateAnnotationsInverson, CreateAnnotationDate, Side, CreateAnnotationPoint /* CreateAnnotationsDifference */ } from "./annotation"
 import CalculateIntervals from "./intervals"
-
+import { HeightDifference } from "./heights"
 import CreateProfile from "./profile"
 import CreateRectangles from "./rectangles"
 import Gradiend from "./gradient"
@@ -61,15 +61,18 @@ const actions = {
 
         const INTERPOLATESTEP = ctx.getters.INTERPOLATESTEP
 
+        const heightDifference = HeightDifference(hpp)
+
         DownloadDataNewApiStatistic({ date }).then((contour) => {
             const promises = []
             hpp.forEach(async site => {
-                const options = { date, site, interval, indicators: heights, dataType }
+                const options = { date, site, interval, indicators: heights, dataType, heightDifference }
                 if (site.query) {
                     const d = DownloadDataNewApi(options).then(async res => {
                         const data = res.data
                         const exist = data.length > 0
                         let interpolate = []
+                        console.log(site.name)
                         if (onInterpolate)
                             interpolate = await Interpolate(data, timeLine, INTERPOLATESTEP)
                         else

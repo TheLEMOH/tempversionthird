@@ -1,4 +1,7 @@
 const Interpolate = async (data, timeLine, step) => {
+    if (data.length == 0)
+        return []
+
     const result = []
     if (data.length != 0) {
         for (let j = 0, timeLength = timeLine.length; j < timeLength; j++) {
@@ -16,9 +19,11 @@ const Interpolate = async (data, timeLine, step) => {
                 const startY = oneDay[i - 1].value
                 const endY = oneDay[i].value
 
-                const value = (((height - startX) * (endY - startY) / (endX - startX)) + startY).toFixed(3)
+                if ((startX <= 1000 || endX >= 0)) {
 
-                result.push({ time, value: +value, tag: height, indicator: `${height}h` })
+                    const value = (((height - startX) * (endY - startY) / (endX - startX)) + startY).toFixed(3)
+                    result.push({ time, value: +value, tag: height, indicator: `${height}h` })
+                }
 
                 height += step
 
@@ -31,6 +36,8 @@ const Interpolate = async (data, timeLine, step) => {
             }
         }
     }
+
+    console.log(result)
 
     return result
 }

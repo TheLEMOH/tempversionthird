@@ -32,20 +32,11 @@ const InitGrap = async (sites, data, heights, contour) => {
 
         if (site.graphics.atmosphereDifference) {
             const dataForDifferenceAtmosphere = [data[4310], data[1]]
-
-
-
             const grid = await CreateGridDifference(dataForDifferenceAtmosphere, heights)
-
-            console.log(grid)
-
             atmosphereDifference = CreateAtmosphere(grid, heights)
         }
 
         return Promise.all([termogramma, atmosphere, inversion, windpm, atmosphereDifference]).then((res) => {
-
-            console.log(res[4])
-
             return {
                 termogramma: res[0],
                 atmosphere: res[1],

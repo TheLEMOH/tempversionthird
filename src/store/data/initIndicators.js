@@ -6,9 +6,9 @@ const InitIndicators = (step) => {
         const id = `${i}h`
         const tag = i
         const name = `Температура (${i} м)`
+        const code = tag + 'h'
 
-
-        res.push({ id, tag, name })
+        res.push({ id, tag, name, code })
     }
 
     res.push({ id: 103, code: 'm-t', name: 'Температура воздуха', units: '°С' })
