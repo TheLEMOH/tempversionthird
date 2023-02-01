@@ -61,7 +61,7 @@ const actions = {
 
         const INTERPOLATESTEP = ctx.getters.INTERPOLATESTEP
 
-        const heightDifference = HeightDifference(hpp)
+        const heightDifference = HeightDifference(hpp, onInterpolate)
 
         DownloadDataNewApiStatistic({ date }).then((contour) => {
             const promises = []
@@ -72,11 +72,14 @@ const actions = {
                         const data = res.data
                         const exist = data.length > 0
                         let interpolate = []
-                        console.log(site.name)
+
                         if (onInterpolate)
                             interpolate = await Interpolate(data, timeLine, INTERPOLATESTEP)
                         else
                             interpolate = data
+
+
+
                         ctx.commit('UpdateData', { data: interpolate, site: site.id })
                         this.dispatch("UpdateDataExist", { data: exist, id: site.id })
                         return { data: interpolate, site: site.id, exist, children: site.children, profiler: site.profiler }
@@ -92,7 +95,6 @@ const actions = {
             })
 
             Promise.all(promises).then(async (res) => {
-
                 const resTest = []
 
                 const profilers = res.filter(v => v.profiler)
@@ -117,8 +119,6 @@ const actions = {
                 })
 
                 const graphics = await InitGrap(sites, dataTest, heightsInterpolate, contour)
-
-
 
                 const x = graphics['4310'].termogramma[0].x
                 const timestampPosition = Math.round(x.length / 2)
@@ -229,6 +229,11 @@ const actions = {
         } else
             ctx.commit('UpdateDisabledProfile', null)
     },
+
+    DeleteAllData(ctx) {
+        ctx.commit('DeleteAllData')
+    }
+
 }
 
 const mutations = {
@@ -237,6 +242,9 @@ const mutations = {
     },
     UpdateGraphics(state, value) {
         state.chartData = value
+    },
+    DeleteAllData(state) {
+        console.log(state)
     },
     UpdateTermogramma(state, value) {
         if (!state.chartData[value.site])

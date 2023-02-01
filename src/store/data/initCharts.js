@@ -53,11 +53,14 @@ const InitGrap = async (sites, data, heights, contour) => {
         const postData = []
         site.sensor.forEach(sensor => {
             sensor.indicators.forEach(indicator => {
+
                 postData.push(...data[sensor.id].filter(d => d.indicator == indicator))
             })
         })
 
 
+        console.log(site.name)
+        
         const g = CreateGraphics(data[site.id], postData, heights, contour, site)
         graphics.push({ data: g, site: site.id })
     })

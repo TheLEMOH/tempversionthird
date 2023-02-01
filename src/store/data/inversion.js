@@ -42,7 +42,7 @@ const CreateInversion = async (data, heights) => {
             hoverongaps: false,
             zauto: false,
             zmin: 0,
-            zmax: 3
+            zmax: 3,
         }]
     });
 }
@@ -59,11 +59,13 @@ const CreateX = async (data) => {
 
 const CreateZ = async (data, heights) => {
 
-    const layers = heights.map(height => {
-        const array = data.filter(d => d.tag == height.tag)
-        return array
-    })
+    const layers = []
 
+    heights.forEach(height => {
+        const array = data.filter(d => d.tag == height.tag && d.value)
+        if (array.length > 0)
+            layers.push(array)
+    })
 
     const z = CalculateInversion(layers)
 
@@ -72,6 +74,10 @@ const CreateZ = async (data, heights) => {
 
 const CalculateInversion = async (layers) => {
     const layersLength = layers.length
+
+    if (layersLength == 0)
+        return []
+
     const array = []
     for (let i = 1; i < layersLength; i++) {
         const layerLength = layers[i].length
@@ -79,8 +85,10 @@ const CalculateInversion = async (layers) => {
         for (let j = 0; j < layerLength; j++) {
             const above = layers[i][j]
             const down = layers[i - 1][j]
+
             if (+above.value > +down.value) {
                 const value = (+above.value - +down.value).toFixed(2)
+
                 array[i - 1].push(value)
             } else
                 array[i - 1].push(null)
@@ -91,6 +99,10 @@ const CalculateInversion = async (layers) => {
 }
 
 const CalculateScatterTotal = (x, z) => {
+
+    if (z.length == 0)
+        return []
+
     const hl = z[0].length
     const zl = z.length
     const y = []

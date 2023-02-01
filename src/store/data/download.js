@@ -94,12 +94,11 @@ const JSONAPI = (json, indicators, site, heightDifference) => {
     let flag = false
     json.data.forEach(j => {
         indicators.forEach(h => {
-
-            const tag = h.tag || h.tag == 0 ? +h.tag - heightDifference[site.id] : 'T0'
-
+            const tag = h.tag != 'T0' ? +h.tag - heightDifference[site.id] : 'T0'
             if (typeof j[h.code] == 'number') {
                 flag = true
                 row.push({
+                    indicator: h.code,
                     time: j.time,
                     value: j[h.code],
                     tag: tag,
@@ -144,12 +143,14 @@ const JSONAPIWIND = (json, indicators) => {
             if (typeof j[h.code] == 'number') {
                 flag = true
                 row.push({
+                    indicator: h.code,
                     time: j.time,
                     value: j[h.code],
                     tag: h.tag
                 })
             } else {
                 row.push({
+                    indicator: h.code,
                     time: j.time,
                     value: null,
                     tag: h.tag
@@ -184,10 +185,14 @@ const CreateTimeGrid = (dates, heights) => {
     const end = typeof dates[1] == 'string' ? new Date(`${dates[1]} 23:55:00`) : new Date(`${dates[1].getFullYear()}-${dates[1].getMonth() + 1}-${dates[1].getDate()} 23:55:00`)
     const interval = Intervals([start, end])
     const grid = []
+
+
+
     while (start.getTime() <= end.getTime()) {
         for (let i = 0, length = heights.length; i < length; i++) {
             grid.push({
                 tag: heights[i].tag,
+                code: heights[i].code,
                 time: FormatDateWithHour(start),
                 value: null
             })

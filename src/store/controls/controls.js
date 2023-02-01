@@ -26,7 +26,7 @@ const state = {
     relayout: {},
     x: null,
     mapModal: false,
-    onInterpolate: true,
+    onInterpolate: false,
     INTERPOLATESTEP: 25,
     windows: { profile: null, rawData1: null, rawData2: null, comparison1: null, comparison2: null },
 
@@ -46,12 +46,16 @@ const actions = {
 
         const heights = profilemerSets.indicators
 
+        const mT = heights.find(h => h.code == 'm-t')
+
+        mT.tag = 'T0'
+
         let heightsInterpolate = null
 
         if (onInterpolate)
             heightsInterpolate = InitIndicators(INTERPOLATESTEP)
         else
-            heightsInterpolate = heights
+            heightsInterpolate = JSON.parse(JSON.stringify(heights))
 
         const meteo = meteoSets.sites
         const meteoIndicators = meteoSets.indicators
@@ -112,9 +116,13 @@ const actions = {
     UpdateOnInterpolate(ctx, value) {
         const date = ctx.getters.dateControl
 
+        ctx.commit('UpdateOnInterpolate', value)
+
+        this.dispatch('DeleteAllData')
+
         this.dispatch("GetSets", { date, interpolate: value })
 
-        ctx.commit('UpdateOnInterpolate', value)
+
     },
     UpdateOnManually(ctx, value) {
         ctx.commit('UpdateOnManually', value)

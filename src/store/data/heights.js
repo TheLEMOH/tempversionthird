@@ -14,7 +14,7 @@ const CreateHeights = (begin, end, step) => {
     }
     return res
 }
-const temperature = { code: 'm-t', name: "T" }
+const temperature = { code: 'm-t', name: "T", tag: 'T0' }
 const from0to100 = CreateHeights(0, 100, 25, 374)
 const from200to1000 = CreateHeights(150, 1000, 50, 379)
 const heights = [...from0to100, ...from200to1000, temperature]
@@ -28,12 +28,17 @@ const sitesIndicators = [{
 }]
 
 
-const HeightDifference = (sites) => {
+const HeightDifference = (sites, onInterpolate) => {
     const result = {}
 
-    sites.forEach(site => {
-        result[site.id] = 146 - +site.geom_alt 
-    });
+    if (onInterpolate)
+        sites.forEach(site => {
+            result[site.id] = 146 - +site.geom_alt
+        });
+    else
+        sites.forEach(site => {
+            result[site.id] = 0
+        });
 
     return result
 }

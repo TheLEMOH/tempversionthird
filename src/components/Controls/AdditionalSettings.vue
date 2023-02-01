@@ -24,7 +24,7 @@
       <h1>Интерполяция</h1>
       <el-row :gutter="30">
         <el-col :span="16">
-          <el-checkbox :value="onInterpolate" :label="'Включить интерполяцию данных'" :disabled="true"
+          <el-checkbox :value="onInterpolate" :label="'Включить интерполяцию данных'" :disabled="loading"
             @change="UpdateOnInterpolate"></el-checkbox>
         </el-col>
         <el-col :span="5">
@@ -67,7 +67,8 @@ export default {
       "manuallyMinMax",
       "onDirection",
       "onInterpolate",
-      "INTERPOLATESTEP"
+      "INTERPOLATESTEP",
+      "loading"
     ]),
 
     minmax: {
