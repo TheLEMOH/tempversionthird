@@ -1,6 +1,6 @@
 const CreateProfile = async (options) => {
     const { data, date, site, disabledProfile } = options
-    const layer = data.filter(r => r.tag || r.tag == 0).filter(d => d.time == date)
+    const layer = data.filter(r => r.tag != 'T0').filter(d => d.time == date)
     const line = CreateLine(layer, site, disabledProfile)
 
     return line

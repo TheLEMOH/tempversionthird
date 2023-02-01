@@ -92,6 +92,7 @@ const actions = {
             })
 
             Promise.all(promises).then(async (res) => {
+
                 const resTest = []
 
                 const profilers = res.filter(v => v.profiler)

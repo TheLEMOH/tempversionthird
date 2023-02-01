@@ -16,8 +16,8 @@ const CreateAtmosphere = async (data, heights, contour = { avgMin: 0, avgMax: 0 
         return []
 
     const x = data.filter(d => d.tag == 0).map(d => d.time)
-    const y = heights.filter(h => h.tag).map(h => h.tag)
-    const z = heights.filter(h => h.tag).map((height) => {
+    const y = heights.filter(h => h.tag != 'T0').map(h => h.tag)
+    const z = heights.filter(h => h.tag != 'T0').map((height) => {
         const layer = data.filter(d => d.tag == height.tag)
         return CreateZ(layer)
     })

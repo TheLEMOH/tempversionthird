@@ -20,7 +20,7 @@ let settingsScatterTotal = {
 }
 
 const CreateInversion = async (data, heights) => {
-    const h = heights.filter(h => h.tag || h.tag == 0)
+    const h = heights.filter(h => h.tag != 'T0')
     const x = CreateX(data)
     const y = CreateY(h)
     const z = CreateZ(data, h)
@@ -33,7 +33,6 @@ const CreateInversion = async (data, heights) => {
             z: values[2],
             type: 'heatmap',
             name: 'Инверсия',
-            hoverinfo: 'z',
             hovertemplate: `
             %{x} <br>
             Высота: <b>%{y}м</b> <br>

@@ -10,7 +10,7 @@ const CreateLineChart = async (data, heights) => {
 const CreateLine = (data, height) => {
     const x = []
     const y = []
-    const line = !height.tag && height.tag != 0 ? { width: 5, color: '#000000', dash: 'dashdot', shape: 'spline' } : { shape: 'spline' }
+    const line = height.tag == 'T0' ? { width: 5, color: '#000000', dash: 'dashdot', shape: 'spline' } : { shape: 'spline' }
 
     data.forEach(element => {
         x.push(`${element.time}`)

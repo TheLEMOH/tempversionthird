@@ -78,6 +78,7 @@ const InitWindPm = (data) => {
     const wind = CreateLineWind(wv, settingsWind)
     const pm2 = CreateLinePm(pm, settingsPm)
 
+
     return [wind, ...pm2]
 }
 

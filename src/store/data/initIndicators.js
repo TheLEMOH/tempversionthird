@@ -11,7 +11,7 @@ const InitIndicators = (step) => {
         res.push({ id, tag, name, code })
     }
 
-    res.push({ id: 103, code: 'm-t', name: 'Температура воздуха', units: '°С' })
+    res.push({ id: 103, code: 'm-t', tag: 'T0', name: 'Температура воздуха', units: '°С' })
 
     return res
 }

@@ -3,6 +3,7 @@
     "xaxis": {
         "autorange": true
     },
+    "hovermode": "x",
     "yaxis": {
         "side": "left",
         "title": {

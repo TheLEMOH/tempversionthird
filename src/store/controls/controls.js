@@ -27,7 +27,7 @@ const state = {
     x: null,
     mapModal: false,
     onInterpolate: true,
-    INTERPOLATESTEP: 50,
+    INTERPOLATESTEP: 25,
     windows: { profile: null, rawData1: null, rawData2: null, comparison1: null, comparison2: null },
 
 }

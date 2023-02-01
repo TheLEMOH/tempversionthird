@@ -94,7 +94,9 @@ const JSONAPI = (json, indicators, site, heightDifference) => {
     let flag = false
     json.data.forEach(j => {
         indicators.forEach(h => {
-            const tag = h.tag || h.tag == 0 ? +h.tag - heightDifference[site.id] : null
+
+            const tag = h.tag || h.tag == 0 ? +h.tag - heightDifference[site.id] : 'T0'
+
             if (typeof j[h.code] == 'number') {
                 flag = true
                 row.push({
