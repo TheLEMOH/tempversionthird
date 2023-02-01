@@ -20,7 +20,7 @@ let settingsScatterTotal = {
 }
 
 const CreateInversion = async (data, heights) => {
-    const h = heights.filter(h => h.tag != 'T0')
+    const h = heights.filter(h => h.tag != 'T0' && h.code != 'm-t')
     const x = CreateX(data)
     const y = CreateY(h)
     const z = CreateZ(data, h)
@@ -62,7 +62,7 @@ const CreateZ = async (data, heights) => {
     const layers = []
 
     heights.forEach(height => {
-        const array = data.filter(d => d.tag == height.tag && d.value)
+        const array = data.filter(d => d.tag == height.tag)
         if (array.length > 0)
             layers.push(array)
     })
@@ -86,7 +86,8 @@ const CalculateInversion = async (layers) => {
             const above = layers[i][j]
             const down = layers[i - 1][j]
 
-            if (+above.value > +down.value) {
+            if (+above.value > +down.value && above.value != null) {
+
                 const value = (+above.value - +down.value).toFixed(2)
 
                 array[i - 1].push(value)
