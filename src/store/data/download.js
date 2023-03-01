@@ -186,8 +186,6 @@ const CreateTimeGrid = (dates, heights) => {
     const interval = Intervals([start, end])
     const grid = []
 
-
-
     while (start.getTime() <= end.getTime()) {
         for (let i = 0, length = heights.length; i < length; i++) {
             grid.push({
