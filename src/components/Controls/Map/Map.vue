@@ -1,11 +1,17 @@
 <template>
-  <List :items="sites.filter(s=>s.geom_x)" @clickItem="ClickItem"></List>
+  <div class="map-menu">
+    <Slider></Slider>
+    <List :items="sites.filter((s) => s.geom_x)" @clickItem="ClickItem"></List>
+  </div>
+
   <div class="map" id="map" ref="map"></div>
   <div id="tooltip" class="tooltip-map"></div>
+  <div id="sites-map-info" class="sites-map-info"></div>
 </template>
 
 <script>
 import List from "./List.vue";
+import Slider from "./Slider.vue";
 
 import Map from "ol/Map.js";
 import TileLayer from "ol/layer/Tile.js";
@@ -25,19 +31,13 @@ import CreateFeatures from "./features";
 
 /* Регистрация проекции */
 proj4.defs("EPSG:4326");
-proj4.defs(
-  "EPSG:28416",
-  "+proj=tmerc +lat_0=0 +lon_0=93 +k=1 +x_0=16500000 +y_0=0 +ellps=krass +towgs84=23.92,-141.27,-80.9,-0,0.35,0.82,-0.12 +units=m +no_defs"
-);
+proj4.defs("EPSG:28416", "+proj=tmerc +lat_0=0 +lon_0=93 +k=1 +x_0=16500000 +y_0=0 +ellps=krass +towgs84=23.92,-141.27,-80.9,-0,0.35,0.82,-0.12 +units=m +no_defs");
 
 const projSettings = {
   extent: [11385622.915, 2840622.915, 21404377.085, 12859377.085],
   resolutions: [
-    39135.7584765625, 19567.87923828125, 9783.939619140625, 4891.9698095703125,
-    2445.9849047851562, 1222.9924523925781, 611.4962261962891,
-    305.74811309814453, 152.87405654907226, 76.43702827453613,
-    38.218514137268066, 19.109257068634033, 9.554628534317017,
-    4.777314267158508, 2.388657133579254, 1.194328566789627, 0.5971642833948135,
+    39135.7584765625, 19567.87923828125, 9783.939619140625, 4891.9698095703125, 2445.9849047851562, 1222.9924523925781, 611.4962261962891, 305.74811309814453, 152.87405654907226, 76.43702827453613, 38.218514137268066, 19.109257068634033,
+    9.554628534317017, 4.777314267158508, 2.388657133579254, 1.194328566789627, 0.5971642833948135,
   ],
 };
 
@@ -48,9 +48,44 @@ const newProj = new Projection({
 
 addProjection(newProj);
 
+const DrawInfo = (map, data, heights) => {
+  const layers = map.getAllLayers();
+  const source = layers[1].getSource();
+  const features = source.getFeatures();
+
+  const parent = document.getElementById("sites-map-info");
+
+  features.forEach((feature) => {
+    const geometry = feature.getGeometry();
+    const coordinates = geometry.getCoordinates();
+
+    const name = feature.get("name");
+    /*     const site = feature.get("site"); */
+
+    const div = document.createElement("div");
+    div.id = name;
+    div.innerHTML = name;
+
+    parent.append(div);
+
+    const overlay = new Overlay({
+      element: div,
+      offset: [20, -20],
+      positioning: "left",
+    });
+
+    overlay.setPosition(coordinates);
+
+    map.addOverlay(overlay);
+  });
+
+  console.log(data, heights);
+};
+
 export default {
   components: {
     List,
+    Slider,
   },
   data() {
     return {
@@ -98,12 +133,9 @@ export default {
     });
 
     this.map.on("pointermove", (event) => {
-      const feature = this.map.forEachFeatureAtPixel(
-        event.pixel,
-        function (feature) {
-          return feature;
-        }
-      );
+      const feature = this.map.forEachFeatureAtPixel(event.pixel, function (feature) {
+        return feature;
+      });
 
       if (feature) {
         const coordinate = event.coordinate;
@@ -115,10 +147,11 @@ export default {
     });
 
     this.AddProfilers();
+    DrawInfo(this.map, this.data, this.heights);
   },
 
   computed: {
-    ...mapGetters(["sites"]),
+    ...mapGetters(["sites", "data", "heights"]),
   },
 
   methods: {
@@ -163,7 +196,7 @@ export default {
 <style>
 .map {
   width: 100%;
-  height: 500px;
+  height: 95vh;
 }
 
 .tooltip-map {
@@ -171,5 +204,13 @@ export default {
   padding: 0.5em;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
+}
+
+.map-menu {
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  width: 100%;
+  margin-top: 1rem;
 }
 </style>

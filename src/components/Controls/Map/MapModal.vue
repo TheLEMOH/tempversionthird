@@ -1,12 +1,6 @@
 <template>
-  <el-dialog
-    v-model="modal"
-    append-to-body
-    title="Карта"
-    width="50%"
-    :custom-class="'custom-class'"
-  >
-    <Map v-if="sites.length !=0 "></Map>
+  <el-dialog v-model="modal" title="Карта" fullscreen>
+    <Map v-if="sites.length != 0"></Map>
   </el-dialog>
 </template>
 

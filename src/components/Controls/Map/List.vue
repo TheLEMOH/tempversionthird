@@ -1,12 +1,7 @@
 <template>
   <div class="map-sites-list">
     <ul>
-      <li
-        v-for="item in items"
-        :key="item.id"
-        :style="{borderLeft:`15px solid ${item.color} !important`,paddingLeft:'1em !important'}"
-        @click="$emit('clickItem', item)"
-      >{{item.name}}</li>
+      <li v-for="item in items" :key="item.id" :style="{ borderLeft: `15px solid ${item.color} !important`, paddingLeft: '1em !important' }" @click="$emit('clickItem', item)">{{ item.name }}</li>
     </ul>
   </div>
 </template>
@@ -22,11 +17,8 @@ export default {
 .map-sites-list {
   width: 190px;
   flex-shrink: 0;
-  position: absolute;
-  right: 0;
   z-index: 100;
   border-radius: 10px;
-  margin: 1em;
   background: rgb(255, 255, 255, 0.8);
 }
 
