@@ -15,7 +15,6 @@
   </SectionMenu>
 </template>
 
-
 <script>
 import SectionMenu from "./SectionMenu.vue";
 import { mapActions, mapGetters } from "vuex";
@@ -71,8 +70,4 @@ export default {
 };
 </script>
 
-<style>
-#app input {
-  user-select: none;
-}
-</style>
+<style></style>

@@ -6,10 +6,12 @@
     <DrawerButton></DrawerButton>
     <MapButton></MapButton>
     <AboutButton></AboutButton>
+    <ListOfTripButton></ListOfTripButton>
   </div>
   <Drawer></Drawer>
   <About></About>
   <MapModal></MapModal>
+  <ListOfTrip></ListOfTrip>
 </template>
 <script>
 import Name from "./Name.vue";
@@ -21,6 +23,8 @@ import CopyUrl from "./CopyUrl.vue";
 import AboutButton from "./AboutButton.vue";
 import MapButton from "./MapButton.vue";
 import MapModal from "./Map/MapModal.vue";
+import ListOfTripButton from "./ListOfTripButton.vue";
+import ListOfTrip from "./ListOfTrip.vue";
 export default {
   components: {
     Name,
@@ -32,6 +36,8 @@ export default {
     AboutButton,
     MapButton,
     MapModal,
+    ListOfTripButton,
+    ListOfTrip,
   },
 };
 </script>

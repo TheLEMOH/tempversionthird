@@ -1,6 +1,6 @@
 <template>
   <el-date-picker
-    style="width:300px; flex-grow: 0;margin-left: auto; margin-right: 1em;"
+    style="width: 300px; flex-grow: 0; margin-left: auto; margin-right: 1em"
     v-model="date"
     type="daterange"
     range-separator="-"
@@ -11,7 +11,6 @@
     :shortcuts="shortcuts"
   />
 </template>
-
 
 <script>
 import { mapActions, mapGetters } from "vuex";
@@ -65,8 +64,4 @@ export default {
 };
 </script>
 
-<style>
-#app input {
-  user-select: none;
-}
-</style>
+<style></style>
