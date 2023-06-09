@@ -10,7 +10,7 @@ const state = {
   meteo: [],
   heights: [],
   meteoIndicators: [],
-  activeSite: "4313",
+  activeSite: "1",
   activePostComparison: [],
   dateControl: null,
   loading: false,

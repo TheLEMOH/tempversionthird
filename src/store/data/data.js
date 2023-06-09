@@ -116,7 +116,7 @@ const actions = {
           dataTest[r.site] = r.data;
         });
 
-        const timeStampSite = o.timeStampSite ? o.timeStampSite : 4314;
+        const timeStampSite = o.timeStampSite ? o.timeStampSite : 1;
 
         const graphics = await InitGrap(sites, dataTest, heightsInterpolate, contour);
 
@@ -130,7 +130,7 @@ const actions = {
 
         if (!o.link) {
           this.dispatch("UpdateTimestamp", time);
-          this.dispatch("UpdateProfile", { date: time, site: 4314 });
+          this.dispatch("UpdateProfile", { date: time, site: 1 });
         } else {
           const dataFirst = ctx.getters.dataFirst[o.linkId];
           this.dispatch("UpdateTimestamp", dataFirst);
@@ -172,7 +172,7 @@ const actions = {
   },
 
   async UpdateBorders(ctx) {
-    const sites = ctx.getters.sites.filter((s) => s.id != 4314 && s.id != 1 && s.data);
+    const sites = ctx.getters.sites.filter((s) => s.id != 1 && s.id != 1 && s.data);
     const data = ctx.getters.data;
     const borders = [];
 
@@ -194,7 +194,7 @@ const actions = {
   },
 
   async UpdateStartPoints(ctx) {
-    const sites = ctx.getters.sites.filter((s) => s.id != 4314 && s.id != 1);
+    const sites = ctx.getters.sites.filter((s) => s.id != 1);
     const data = ctx.getters.data;
     const pointsAnnotation = [];
     sites.forEach((s) => {

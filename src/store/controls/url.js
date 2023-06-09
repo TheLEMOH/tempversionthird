@@ -7,7 +7,7 @@ const GetParams = () => {
     let end = FormatDate(CheckDateEnd(urlParams.get('end')))
     let start = FormatDate(CheckDateStart(urlParams.get('start')))
     const timestamp = CheckTimestamp(urlParams.get('timestamp'))
-    const site = urlParams.get('site') || 4310
+    const site = urlParams.get('site') || 1
     const tab = CheckTab(urlParams.get('tab'))
     const rawData1 = CheckChart(urlParams.get('rawData1'))
     const rawData2 = CheckChart(urlParams.get('rawData2'))
