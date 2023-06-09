@@ -37,12 +37,16 @@ const state = {
 
 const actions = {
   async GetSets(ctx, { date, interpolate }) {
+    const appDiv = document.getElementById("app");
+    const setProfilerFromDiv = appDiv.getAttribute("profiler-set");
+    const setMeteoFromDiv = appDiv.getAttribute("meteo-set");
+
     const onInterpolate = interpolate || ctx.getters.onInterpolate;
 
     const INTERPOLATESTEP = ctx.getters.INTERPOLATESTEP;
 
-    const profilemerSets = await DownloadSets("hpp-mtp5");
-    const meteoSets = await DownloadSets("hpp-meteo");
+    const profilemerSets = await DownloadSets(setProfilerFromDiv);
+    const meteoSets = await DownloadSets(setMeteoFromDiv);
     const sites = initSets(profilemerSets.sites);
 
     const heights = profilemerSets.indicators;

@@ -4,7 +4,7 @@ const appDiv = document.getElementById("app");
 const urlFromDiv = appDiv.getAttribute("url");
 const uidFromDiv = appDiv.getAttribute("uid");
 const setProfilerFromDiv = appDiv.getAttribute("profiler-set");
-
+const setMeteoFromDiv = appDiv.getAttribute("meteo-set");
 /*  */
 
 const FormatDate = (d) => {
@@ -64,7 +64,7 @@ const DownloadDataWindPm = async (options) => {
   const { date, site, indicators, interval } = options;
   const dateBegin = FormatDate(date[0]);
   const dateEnd = FormatDate(date[1]);
-  const URL = `${urlFromDiv}/hub/api/3.0/sets/hpp-meteo/data/archive?uid=${uidFromDiv}&sites=${site.id}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=${interval}`;
+  const URL = `${urlFromDiv}/hub/api/3.0/sets/${setMeteoFromDiv}/data/archive?uid=${uidFromDiv}&sites=${site.id}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=${interval}`;
   const fetchData = await fetch(URL);
   const json = await fetchData.json();
   const data = JSONAPIWIND(json, indicators);
