@@ -21,7 +21,7 @@ export default {
   components: { Menu },
   data() {
     return {
-      l: { ...layouts },
+      l: JSON.parse(JSON.stringify(layouts)),
       config: { responsive: true },
     };
   },
@@ -52,7 +52,8 @@ export default {
       "detailsTermogramm",
       "windows",
       "windDirection",
-      "onDirection"
+      "onDirection",
+      "dateControl",
     ]),
     code() {
       const activeSite = this.site || this.activeSite;
@@ -70,14 +71,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      "UpdateProfile",
-      "UpdateProfileTimeSeries",
-      "UpdateDataFromGantt",
-      "UpdateTimestamp",
-      "UpdateRelaout",
-      "UpdateWindow",
-    ]),
+    ...mapActions(["UpdateProfile", "UpdateProfileTimeSeries", "UpdateDataFromGantt", "UpdateTimestamp", "UpdateRelaout", "UpdateWindow"]),
 
     async ChangeChart(chart) {
       this.UpdateWindow({ id: this.id, chart: chart });
@@ -104,11 +98,11 @@ export default {
       const timestamp = this.timestamp;
       const borders = this.onBorders && site != 4310 ? this.borders : [];
       const points = this.onBorders && site != 4310 ? this.startPoints : [];
-      const directions = this.windDirection[site] && this.chart == 'windpm' && this.onDirection ? this.windDirection[site] : []
+      const directions = this.windDirection[site] && this.chart == "windpm" && this.onDirection ? this.windDirection[site] : [];
       const shapes = [...borders, ...timestamp.shapes];
       const annotations = [...timestamp.annotations, ...points, ...directions];
-      const template = { ...layout, shapes, annotations };
 
+      const template = { ...layout, shapes, annotations };
 
       return template;
     },
@@ -130,10 +124,7 @@ export default {
       chart.on("plotly_click", (data) => {
         const activeSite = this.activeSite;
         const points = data.points[0];
-        const x =
-          points.x.split(" ").length == 1
-            ? points.x + " 00:00:00"
-            : points.x + ":00";
+        const x = points.x.split(" ").length == 1 ? points.x + " 00:00:00" : points.x + ":00";
 
         this.UpdateTimestamp(x);
         this.UpdateProfile({ date: x, site: activeSite.id });
@@ -143,6 +134,7 @@ export default {
         const autosize = event.autosize;
         const range = event["xaxis.range[0]"];
         const autorange = event["xaxis.autorange"];
+
         if (!autosize && (range || autorange)) {
           const id = this.id;
           this.UpdateRelaout({ event, id });
@@ -163,7 +155,6 @@ export default {
     async Relayout() {
       const chart = this.$refs.chart;
       const template = this.GetTemplate();
-
       Plotly.relayout(chart, template);
     },
 
@@ -228,6 +219,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

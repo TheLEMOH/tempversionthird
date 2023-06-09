@@ -31,6 +31,7 @@ const state = {
 const actions = {
   async Download(ctx, o) {
     /*  */
+    this.dispatch("UpdateLoading", true);
     document.activeElement.blur();
 
     ctx.commit("UpdateTimestamp", { shapes: [], annotations: [] });
@@ -78,6 +79,7 @@ const actions = {
 
             ctx.commit("UpdateData", { data: interpolate, site: site.id });
             this.dispatch("UpdateDataExist", { data: exist, id: site.id });
+            this.dispatch("UpdateDataFirst", { time: res.dataFirst, id: site.id });
             return { data: interpolate, site: site.id, exist, children: site.children, profiler: site.profiler };
           });
           promises.push(d);
@@ -114,16 +116,27 @@ const actions = {
           dataTest[r.site] = r.data;
         });
 
+        const timeStampSite = o.timeStampSite ? o.timeStampSite : 4310;
+
         const graphics = await InitGrap(sites, dataTest, heightsInterpolate, contour);
 
-        const x = graphics["4310"].termogramma[0].x;
+        const x = graphics[timeStampSite].termogramma[0].x;
+
         const timestampPosition = Math.round(x.length / 2);
-        const time = ctx.getters.x || x[timestampPosition];
+
+        const time = x[timestampPosition] || ctx.getters.x;
 
         ctx.commit("UpdateGraphics", graphics);
 
-        this.dispatch("UpdateTimestamp", time);
-        this.dispatch("UpdateProfile", { date: time, site: 4310 });
+        if (!o.link) {
+          this.dispatch("UpdateTimestamp", time);
+          this.dispatch("UpdateProfile", { date: time, site: 4310 });
+        } else {
+          const dataFirst = ctx.getters.dataFirst[o.linkId];
+          this.dispatch("UpdateTimestamp", dataFirst);
+          this.dispatch("UpdateProfile", { date: dataFirst, site: o.linkId });
+        }
+
         this.dispatch("UpdateLoading", false);
         this.dispatch("UpdateStartPoints");
         this.dispatch("UpdateWindDirection", post);
@@ -208,6 +221,7 @@ const actions = {
       shapes.push({ shapes: [...r, ...lt.shapes], id: profile.id });
       annotations.push({ annotations: [...a, ...lt.annotations], id: profile.id });
     });
+
     ctx.commit("UpdateProfileInversion", { shapes, annotations });
   },
 

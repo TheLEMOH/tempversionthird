@@ -30,14 +30,13 @@ const state = {
   x: null,
   mapModal: false,
   onInterpolate: false,
+  dataFirst: {},
   INTERPOLATESTEP: 25,
   windows: { profile: null, rawData1: null, rawData2: null, comparison1: null, comparison2: null },
 };
 
 const actions = {
   async GetSets(ctx, { date, interpolate }) {
-    this.dispatch("UpdateLoading", true);
-
     const onInterpolate = interpolate || ctx.getters.onInterpolate;
 
     const INTERPOLATESTEP = ctx.getters.INTERPOLATESTEP;
@@ -84,6 +83,13 @@ const actions = {
     ctx.commit("UpdateTab", value);
   },
   UpdateSite(ctx, value) {
+    const dataFirst = ctx.getters.dataFirst[value];
+
+    if (dataFirst && Number(value) != 4310 && Number(value) != 1) {
+      this.dispatch("UpdateProfile", { date: dataFirst, site: value });
+      this.dispatch("UpdateTimestamp", dataFirst);
+    }
+
     ctx.commit("UpdateSite", value);
   },
   UpdateMode(ctx, value) {
@@ -95,14 +101,42 @@ const actions = {
   UpdateDataExist(сtx, value) {
     сtx.commit("UpdateDataExist", value);
   },
+  UpdateDataFirst(ctx, value) {
+    ctx.commit("UpdateDataFirst", value);
+  },
   UpdateDate(ctx, value) {
     const options = { date: value };
 
     this.dispatch("Download", options);
 
     ctx.commit("UpdateRelaout", {});
-    ctx.commit("UpdateLoading", true);
     ctx.commit("UpdateDate", value);
+  },
+  ClickUrlTrip(ctx, object) {
+    const date = object.date.split(" ")[0];
+    const options = {
+      date: [date, date],
+      link: true,
+      linkId: object.site.id,
+    };
+
+    const data = ctx.getters.data[object.site.id];
+    const requestedDate = data[0] ? new Date(data[0].time.split(" ")[0]) : new Date(date);
+    const newDate = new Date(date);
+
+    if (requestedDate.getTime() != newDate.getTime() || !data[0]) {
+      this.dispatch("Download", options);
+    } else {
+      const dataFirst = ctx.getters.dataFirst[object.site.id];
+
+      this.dispatch("UpdateProfile", { date: dataFirst, site: object.site.id });
+      this.dispatch("UpdateTimestamp", dataFirst);
+    }
+
+    ctx.commit("UpdateTab", "rawData");
+    ctx.commit("UpdateRelaout", {});
+    ctx.commit("UpdateSite", object.site.id);
+    ctx.commit("UpdateDate", [date, date]);
   },
   UpdateLoading(ctx, value) {
     ctx.commit("UpdateLoading", value);
@@ -221,6 +255,9 @@ const mutations = {
     const index = state.sites.findIndex((s) => s.id == value.id);
     state.sites[index].data = value.data;
   },
+  UpdateDataFirst(state, value) {
+    state.dataFirst[value.id] = value.time;
+  },
   UpdateOnBorders(state, value) {
     state.onBorders = value;
   },
@@ -279,7 +316,20 @@ const getters = {
     return state.activeSite;
   },
   dateControl(state) {
-    return state.dateControl;
+    if (!state.dateControl) return state.dateControl;
+
+    let start = state.dateControl[0];
+    let end = state.dateControl[1];
+
+    if (typeof state.dateControl[0] != "string") {
+      start = FormatDate(start);
+      end = FormatDate(end);
+    }
+
+    return [start, end];
+  },
+  dataFirst(state) {
+    return state.dataFirst;
   },
   loading(state) {
     return state.loading;

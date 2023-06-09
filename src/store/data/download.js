@@ -1,3 +1,12 @@
+/* Параметры из дива */
+
+const appDiv = document.getElementById("app");
+const urlFromDiv = appDiv.getAttribute("url");
+const uidFromDiv = appDiv.getAttribute("uid");
+const setProfilerFromDiv = appDiv.getAttribute("profiler-set");
+
+/*  */
+
 const FormatDate = (d) => {
   const date = new Date(d);
   let dd = date.getDate();
@@ -32,15 +41,18 @@ const DownloadDataNewApi = async (options) => {
   const { date, site, indicators, interval, dataType, heightDifference } = options;
   const dateBegin = FormatDate(date[0]);
   const dateEnd = FormatDate(date[1]);
-  const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/hpp-mtp5/data/${dataType}?uid=85hpwm81fqhnqk8n&sites=${site.id}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=${interval}`;
+  const URL = `${urlFromDiv}/hub/api/3.0/sets/${setProfilerFromDiv}/data/${dataType}?uid=${uidFromDiv}&sites=${site.id}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=${interval}`;
   const fetchData = await fetch(URL);
   const json = await fetchData.json();
+
+  const dataFirst = FindFirstData(json);
+
   const data = JSONAPI(json, indicators, site, heightDifference);
-  return { data, site: site.id };
+  return { data, site: site.id, dataFirst };
 };
 
 const DownloadSets = async (project) => {
-  const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/${project}?uid=85hpwm81fqhnqk8n`;
+  const URL = `${urlFromDiv}/hub/api/3.0/sets/${project}?uid=${uidFromDiv}`;
   const fetchData = await fetch(URL);
   const json = await fetchData.json();
   const sites = json.data.sites || [];
@@ -52,7 +64,7 @@ const DownloadDataWindPm = async (options) => {
   const { date, site, indicators, interval } = options;
   const dateBegin = FormatDate(date[0]);
   const dateEnd = FormatDate(date[1]);
-  const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/hpp-meteo/data/archive?uid=85hpwm81fqhnqk8n&sites=${site.id}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=${interval}`;
+  const URL = `${urlFromDiv}/hub/api/3.0/sets/hpp-meteo/data/archive?uid=${uidFromDiv}&sites=${site.id}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=${interval}`;
   const fetchData = await fetch(URL);
   const json = await fetchData.json();
   const data = JSONAPIWIND(json, indicators);
@@ -63,7 +75,7 @@ const DownloadDataNewApiStatistic = async (options) => {
   const { date } = options;
   const dateBegin = FormatDate(date[0]);
   const dateEnd = FormatDate(date[1]);
-  const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/hpp-mtp5/data/archive-ext?uid=85hpwm81fqhnqk8n&sites=${4310}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=day`;
+  const URL = `${urlFromDiv}/hub/api/3.0/sets/${setProfilerFromDiv}/data/archive-ext?uid=${uidFromDiv}&sites=${4310}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=day`;
   const fetchData = await fetch(URL);
   const json = await fetchData.json();
   const avg = Average(json);
@@ -83,8 +95,6 @@ const Average = (json) => {
       }
     }
   }
-
-  console.log(data);
 
   const min = Math.round(Math.min.apply(null, minArray));
   const max = Math.round(Math.max.apply(null, maxArray));
@@ -230,7 +240,9 @@ const Cut = (values, grid) => {
         const gridIndex = grid.findIndex((p) => p.tag == values[i].data[j].tag && p.time == values[i].data[j].time);
         if (gridIndex != -1) {
           grid[gridIndex].value = values[i].data[j].value;
-        }
+        } /* else {
+          grid.unshift(values[i].data[j]);
+        } */
       }
     }
   }
@@ -243,11 +255,18 @@ const Cut = (values, grid) => {
     }
   }
 
-  if (flag) return [];
+  /*   const g = SortByTime(grid); */
 
+  if (flag) return [];
   return grid;
 };
 
+/* const SortByTime = (array) => {
+  array.sort((one, two) => new Date(one.time) - new Date(two.time));
+
+  return array;
+};
+ */
 const Intervals = (dates) => {
   const start = typeof dates[0] == "string" ? new Date(`${dates[0]} 00:00:00`) : new Date(`${dates[0].getFullYear()}-${dates[0].getMonth() + 1}-${dates[0].getDate()} 00:00:00`);
   const end = typeof dates[1] == "string" ? new Date(`${dates[1]} 23:00:00`) : new Date(`${dates[1].getFullYear()}-${dates[1].getMonth() + 1}-${dates[1].getDate()} 23:00:00`);
@@ -264,6 +283,18 @@ const Intervals = (dates) => {
   if (TotalDays > 31) {
     return "day";
   }
+};
+
+const FindFirstData = (json) => {
+  const data = json.data;
+  for (let i = 0, length = data.length; i < length; i++) {
+    const time = data[i].time;
+    const minute = time.split(" ")[1].split(":")[1];
+    const second = time.split(" ")[1].split(":")[2];
+    if (minute % 5 == 0 && second % 5 == 0) return time;
+  }
+
+  return false;
 };
 
 export { FormatDateWithHour, FormatDate, DownloadDataNewApi, DownloadDataNewApiStatistic, DownloadSets, Cut, DownloadDataWindPm, CreateTimeGrid, CreateTimeLine };

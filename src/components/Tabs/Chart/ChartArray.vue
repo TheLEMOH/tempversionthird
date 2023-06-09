@@ -49,7 +49,7 @@ export default {
       "windows",
       "chartMenuMain",
       "onDirection",
-      "windDirection"
+      "windDirection",
     ]),
     codes() {
       const sites = this.sites.filter((s) => s.id != 4310);
@@ -69,14 +69,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      "UpdateProfile",
-      "UpdateProfileTimeSeries",
-      "UpdateDataFromGantt",
-      "UpdateTimestamp",
-      "UpdateRelaout",
-      "UpdateWindow",
-    ]),
+    ...mapActions(["UpdateProfile", "UpdateProfileTimeSeries", "UpdateDataFromGantt", "UpdateTimestamp", "UpdateRelaout", "UpdateWindow"]),
 
     async ChangeChart(chart) {
       this.UpdateWindow({ id: this.id, chart: chart });
@@ -97,13 +90,13 @@ export default {
     },
 
     GetTemplate(chart = this.chart) {
-      const site = 1
+      const site = 1;
       const layout = layouts[chart];
       const timestamp = this.timestamp;
       const points = this.onBorders ? this.startPoints : [];
       const borders = this.onBorders ? this.borders : [];
       const shapes = [...borders, ...timestamp.shapes];
-      const directions = this.windDirection[site] && this.chart == 'windpm' && this.onDirection ? this.windDirection[site] : []
+      const directions = this.windDirection[site] && this.chart == "windpm" && this.onDirection ? this.windDirection[site] : [];
       const annotations = [...points, ...timestamp.annotations, ...directions];
       const template = { ...layout, shapes, annotations };
       return template;
@@ -122,10 +115,7 @@ export default {
       chart.on("plotly_click", (data) => {
         const activeSite = this.activeSite;
         const points = data.points[0];
-        const x =
-          points.x.split(" ").length == 1
-            ? points.x + " 00:00:00"
-            : points.x + ":00";
+        const x = points.x.split(" ").length == 1 ? points.x + " 00:00:00" : points.x + ":00";
 
         this.UpdateTimestamp(x);
         this.UpdateProfile({ date: x, site: activeSite.id });
@@ -148,19 +138,21 @@ export default {
       const chart = this.$refs.chart;
       const data = this.GetData();
       const template = this.GetTemplate();
+
       Plotly.react(chart, data, template, this.config);
     },
 
     async Relayout() {
       const chartRef = this.$refs.chart;
       const template = this.GetTemplate();
+
       Plotly.relayout(chartRef, template);
     },
 
     async Sync() {
       const chartRef = this.$refs.chart;
       const relayout = this.relayout;
-      Plotly.relayout(chartRef, relayout.event);
+      if (relayout.event) Plotly.relayout(chartRef, relayout.event);
     },
   },
 
@@ -200,6 +192,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

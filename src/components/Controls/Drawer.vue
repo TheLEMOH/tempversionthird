@@ -1,7 +1,7 @@
 <template>
   <el-drawer modal-class="drawer-menu" v-model="modal" size="400px">
     <template #title>
-      <strong style="color:black; font-size:1.4em;">Настройки</strong>
+      <strong style="color: black; font-size: 1.4em">Настройки</strong>
     </template>
     <!--     <Post></Post> -->
     <Views></Views>

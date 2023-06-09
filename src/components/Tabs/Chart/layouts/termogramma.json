@@ -1,24 +1,25 @@
 {
-    "autosize": true,
-    "xaxis": {
-        "autorange": true
+  "autosize": true,
+  "xaxis": {
+    "autorange": true,
+    "type": "date",
+    "ticks": "outside"
+  },
+  "yaxis": {
+    "title": {
+      "text": "Температура (°C)",
+      "font": {
+        "size": 12,
+        "color": "#7f7f7f"
+      }
     },
-    "yaxis": {
-        "title": {
-            "text": "Температура (°C)",
-            "font": {
-                "size": 12,
-                "color": "#7f7f7f"
-            }
-        },
-        "fixedrange": true
-    },
-    "margin": {
-        "l": 55,
-        "r": 20,
-        "b": 40,
-        "t": 30
-    },
-    "showlegend": true
-
+    "fixedrange": true
+  },
+  "margin": {
+    "l": 55,
+    "r": 20,
+    "b": 40,
+    "t": 30
+  },
+  "showlegend": true
 }

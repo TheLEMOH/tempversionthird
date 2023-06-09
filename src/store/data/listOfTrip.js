@@ -13,10 +13,20 @@ const ListOfTrip = async (sites) => {
   });
 
   return Promise.all(promises).then((res) => {
-    const list = res.map((r) => {
-      return { name: r.site.name, dates: GetDates(r.data) };
+    const dates = GetDates(res);
+    const uniqueDates = dates.filter(OnlyUnique);
+    const sitesByDay = GetSitesByData(res, uniqueDates);
+
+    sites.forEach((site) => {
+      sitesByDay.forEach((sitebyDay) => {
+        const index = sitebyDay.findIndex((s) => s == site.id);
+        if (index != -1) sitebyDay[index] = site;
+      });
     });
-    return list;
+
+    const sortedAsc = new Map([...sitesByDay].sort());
+
+    return sortedAsc;
   });
 };
 
@@ -34,8 +44,35 @@ const GetData = async (options) => {
   return { site, data: json.data };
 };
 
-const GetDates = (data) => {
-  return data.map((d) => d.time);
+const GetDates = (array) => {
+  const dates = [];
+  array.forEach((r) => {
+    const data = r.data;
+    data.forEach((d) => dates.push(d.time));
+  });
+
+  return dates;
+};
+
+const OnlyUnique = (value, index, array) => {
+  return array.indexOf(value) === index;
+};
+
+const GetSitesByData = (sites, dates) => {
+  const res = new Map();
+  dates.forEach((date) => {
+    const ar = [];
+    sites.forEach((site) => {
+      const data = site.data;
+      data.forEach((d) => {
+        if (d.time == date) ar.push(d.site);
+      });
+    });
+
+    res.set(date, ar);
+  });
+
+  return res;
 };
 
 export default ListOfTrip;

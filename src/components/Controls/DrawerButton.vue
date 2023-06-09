@@ -5,7 +5,7 @@
     </el-icon>
   </el-button>
 </template>
-  <script>
+<script>
 import { Operation } from "@element-plus/icons-vue";
 import { mapActions } from "vuex";
 export default {
@@ -17,6 +17,5 @@ export default {
   },
 };
 </script>
-  
-  <style>
-</style>
+
+<style></style>

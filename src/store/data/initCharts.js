@@ -55,8 +55,6 @@ const InitGrap = async (sites, data, heights, contour) => {
       });
     });
 
-    console.log(site.id);
-
     const g = CreateGraphics(data[site.id], postData, heights, contour, site);
 
     graphics.push({ data: g, site: site.id });

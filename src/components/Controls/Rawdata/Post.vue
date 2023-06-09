@@ -4,16 +4,14 @@
     <template #body>
       <el-radio
         :model-value="activeSite"
-        :class="[site.parent? 'children':'']"
+        :class="[site.parent ? 'children' : '']"
         v-for="site in sites"
         :key="site.id"
         :label="site.id"
         @change="UpdateSite(site.id)"
         :disabled="activeTab == 'comparison' || !site.data"
       >
-        <span
-          :style="{borderLeft:`15px solid ${site.color} !important`,paddingLeft:'1em !important'}"
-        >{{site.name}}</span>
+        <span :style="{ borderLeft: `15px solid ${site.color} !important`, paddingLeft: '1em !important' }">{{ site.name }}</span>
       </el-radio>
     </template>
   </SectionMenu>
@@ -48,5 +46,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

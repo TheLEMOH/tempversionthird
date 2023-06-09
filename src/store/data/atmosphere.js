@@ -23,8 +23,6 @@ const CreateAtmosphere = async (data, heights, contour = { avgMin: 0, avgMax: 0 
       return CreateZ(layer);
     });
 
-  console.log(data);
-
   const heatmap = [
     {
       x,

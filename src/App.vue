@@ -1,9 +1,8 @@
-<template >
-  <div v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-    element-loading-text="Загрузка и обработка данных" style="height:100vh">
+<template>
+  <div v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.8)" element-loading-text="Загрузка и обработка данных" style="height: 100vh">
     <ControlsVue></ControlsVue>
-    <RawData v-if="activeTab == 'rawData'"></RawData>
-    <Comparison v-if="activeTab == 'comparison'"></Comparison>
+    <RawData v-if="activeTab == 'rawData' && params.start != '1970-01-01'"></RawData>
+    <Comparison v-if="activeTab == 'comparison' && params.start != '1970-01-01'"></Comparison>
   </div>
 </template>
 
@@ -18,12 +17,8 @@ export default {
   name: "App",
   components: {
     ControlsVue,
-    RawData: defineAsyncComponent(() =>
-      import("./components/Tabs/RawData/RawData.vue")
-    ),
-    Comparison: defineAsyncComponent(() =>
-      import("./components/Tabs/Comparison/Comparison.vue")
-    ),
+    RawData: defineAsyncComponent(() => import("./components/Tabs/RawData/RawData.vue")),
+    Comparison: defineAsyncComponent(() => import("./components/Tabs/Comparison/Comparison.vue")),
   },
   mounted() {
     const params = GetParams();
@@ -41,15 +36,7 @@ export default {
     this.GetSets({ date: [params.start, params.end] });
   },
   methods: {
-    ...mapActions([
-      "UpdateDate",
-      "UpdateTab",
-      "UpdateX",
-      "UpdateSite",
-      "GetSets",
-      "UpdateWindows",
-      "UpdateRelaout",
-    ]),
+    ...mapActions(["UpdateDate", "UpdateTab", "UpdateX", "UpdateSite", "GetSets", "UpdateWindows", "UpdateRelaout"]),
   },
   computed: {
     ...mapGetters(["activeTab", "loading", "sites", "params"]),
