@@ -54,8 +54,6 @@ const initSets = (sites) => {
     if (sites[i].code.split("-")[1]) sites[i].children = true;
   }
 
-  console.log(sites);
-
   return sites;
 };
 

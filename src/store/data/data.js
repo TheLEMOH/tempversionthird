@@ -65,7 +65,6 @@ const actions = {
     const heightDifference = HeightDifference(hpp, onInterpolate);
 
     DownloadDataNewApiStatistic({ date }).then((contour) => {
-      console.log(contour);
       const promises = [];
       hpp.forEach(async (site) => {
         const options = { date, site, interval, indicators: heights, dataType, heightDifference };
