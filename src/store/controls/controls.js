@@ -10,7 +10,7 @@ const state = {
   meteo: [],
   heights: [],
   meteoIndicators: [],
-  activeSite: "4310",
+  activeSite: "4313",
   activePostComparison: [],
   dateControl: null,
   loading: false,
@@ -37,11 +37,14 @@ const state = {
 
 const actions = {
   async GetSets(ctx, { date, interpolate }) {
+    const appDiv = document.getElementById("app");
+    const setProfilerFromDiv = appDiv.getAttribute("profiler-set");
+
     const onInterpolate = interpolate || ctx.getters.onInterpolate;
 
     const INTERPOLATESTEP = ctx.getters.INTERPOLATESTEP;
 
-    const profilemerSets = await DownloadSets("hpp-mtp5");
+    const profilemerSets = await DownloadSets(setProfilerFromDiv);
     const meteoSets = await DownloadSets("hpp-meteo");
     const sites = initSets(profilemerSets.sites);
 

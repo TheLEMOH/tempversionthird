@@ -2,7 +2,7 @@
   <SectionMenu>
     <template #name>Режим просмотра</template>
     <template #body>
-      <el-radio :model-value="activeTab" :key="tabs[0].id" :label="tabs[0].id" @click="UpdateTab(tabs[0].id)">{{ tabs[0].name }}</el-radio>
+     <!--  <el-radio :model-value="activeTab" :key="tabs[0].id" :label="tabs[0].id" @click="UpdateTab(tabs[0].id)">{{ tabs[0].name }}</el-radio> -->
 
       <el-radio
         :model-value="activeSite"
@@ -16,7 +16,7 @@
         <span :style="{ borderLeft: `15px solid ${site.color} !important`, paddingLeft: '1em !important' }">{{ site.name }}</span>
       </el-radio>
       <hr />
-      <el-radio :model-value="activeTab" :key="tabs[1].id" :label="tabs[1].id" @click="UpdateTab(tabs[1].id)">{{ tabs[1].name }}</el-radio>
+ <!--      <el-radio :model-value="activeTab" :key="tabs[1].id" :label="tabs[1].id" @click="UpdateTab(tabs[1].id)">{{ tabs[1].name }}</el-radio> -->
     </template>
   </SectionMenu>
 </template>

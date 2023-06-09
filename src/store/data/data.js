@@ -65,6 +65,7 @@ const actions = {
     const heightDifference = HeightDifference(hpp, onInterpolate);
 
     DownloadDataNewApiStatistic({ date }).then((contour) => {
+      console.log(contour);
       const promises = [];
       hpp.forEach(async (site) => {
         const options = { date, site, interval, indicators: heights, dataType, heightDifference };
@@ -116,7 +117,7 @@ const actions = {
           dataTest[r.site] = r.data;
         });
 
-        const timeStampSite = o.timeStampSite ? o.timeStampSite : 4310;
+        const timeStampSite = o.timeStampSite ? o.timeStampSite : 4314;
 
         const graphics = await InitGrap(sites, dataTest, heightsInterpolate, contour);
 
@@ -130,7 +131,7 @@ const actions = {
 
         if (!o.link) {
           this.dispatch("UpdateTimestamp", time);
-          this.dispatch("UpdateProfile", { date: time, site: 4310 });
+          this.dispatch("UpdateProfile", { date: time, site: 4314 });
         } else {
           const dataFirst = ctx.getters.dataFirst[o.linkId];
           this.dispatch("UpdateTimestamp", dataFirst);
@@ -172,7 +173,7 @@ const actions = {
   },
 
   async UpdateBorders(ctx) {
-    const sites = ctx.getters.sites.filter((s) => s.id != 4310 && s.id != 1 && s.data);
+    const sites = ctx.getters.sites.filter((s) => s.id != 4314 && s.id != 1 && s.data);
     const data = ctx.getters.data;
     const borders = [];
 
@@ -194,7 +195,7 @@ const actions = {
   },
 
   async UpdateStartPoints(ctx) {
-    const sites = ctx.getters.sites.filter((s) => s.id != 4310 && s.id != 1);
+    const sites = ctx.getters.sites.filter((s) => s.id != 4314 && s.id != 1);
     const data = ctx.getters.data;
     const pointsAnnotation = [];
     sites.forEach((s) => {

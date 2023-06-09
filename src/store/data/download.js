@@ -75,7 +75,7 @@ const DownloadDataNewApiStatistic = async (options) => {
   const { date } = options;
   const dateBegin = FormatDate(date[0]);
   const dateEnd = FormatDate(date[1]);
-  const URL = `${urlFromDiv}/hub/api/3.0/sets/${setProfilerFromDiv}/data/archive-ext?uid=${uidFromDiv}&sites=${4310}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=day`;
+  const URL = `${urlFromDiv}/hub/api/3.0/sets/${setProfilerFromDiv}/data/archive-ext?uid=${uidFromDiv}&sites=${4314}&time_begin=${dateBegin} 00:00:00&time_end=${dateEnd} 23:59:00&time_interval=day`;
   const fetchData = await fetch(URL);
   const json = await fetchData.json();
   const avg = Average(json);

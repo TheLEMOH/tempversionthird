@@ -47,6 +47,7 @@ const InitGrap = async (sites, data, heights, contour) => {
   };
 
   const graphics = [];
+
   sites.forEach((site) => {
     const postData = [];
     site.sensor.forEach((sensor) => {
