@@ -36,7 +36,7 @@ const GetData = async (options) => {
   const db = FormatDate(dateBegin);
   const de = FormatDate(dateEnd);
 
-  const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/hpp-mtp5/data/archive?uid=85hpwm81fqhnqk8n&sites=${site.id}&time_begin=${db} 00:00:00&time_end=${de} 23:59:00`;
+  const URL = `https://sensor.krasn.ru/hub/api/3.0/sets/knc-mtp5/data/archive?uid=nh0bmniqvqldilyq&sites=${site.id}&time_begin=${db} 00:00:00&time_end=${de} 23:59:00`;
 
   const fetchData = await fetch(URL);
   const json = await fetchData.json();
